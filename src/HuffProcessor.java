@@ -25,13 +25,13 @@ public class HuffProcessor {
 	
 	public static final int DEBUG_HIGH = 4;
 	public static final int DEBUG_LOW = 1;
-<<<<<<< HEAD
+
 	public enum Header{TREE_HEADER, COUNT_HEADER};
 	public Header myHeader = Header.TREE_HEADER;
-=======
 
 
->>>>>>> 48ec0299b8edb786d55cfc474f444d49a8b8a2e9
+
+
 	
 	public HuffProcessor() {
 		this(0);
@@ -83,7 +83,6 @@ public class HuffProcessor {
 	public void decompress(BitInputStream in, BitOutputStream out){
 
 		int temp = in.readBits(BITS_PER_INT);
-<<<<<<< HEAD
 
 		if (temp != HUFF_TREE) {  
 
@@ -92,14 +91,6 @@ public class HuffProcessor {
 		}
 
 
-=======
-		if (temp != HUFF_TREE) {  
-			throw new HuffException("illegal header starts with " +temp);
-		}
-//		if (temp != HUFF_TREE && temp != HUFF_NUMBER) {
-//			throw new HuffException("wrong huff number");
-//		}
->>>>>>> 48ec0299b8edb786d55cfc474f444d49a8b8a2e9
 		HuffNode root = readTreeHeader(in);
 
 		HuffNode current = root;
@@ -107,7 +98,6 @@ public class HuffProcessor {
 		int bits;
 
 		while (true){
-<<<<<<< HEAD
 
 		bits = in.readBits(1);
 
@@ -146,35 +136,11 @@ public class HuffProcessor {
 		        }
 
 		out.close();
-=======
-			bits = in.readBits(1);
-			if(bits == -1) {
-				throw new HuffException("bad input, no PSEUDO_EOF");
-			}else {
-				if(bits == 0) {
-					current = current.myLeft;
-				}else current = current.myRight;
-	            
-				if(current.myLeft == null && current.myRight == null) {
-	            	if (current.getValue() == PSEUDO_EOF) {
-	            		break;
-	            	}else {
-	            		out.writeBits(BITS_PER_WORD, current.myValue);
-	            		current = root;
-	            		}
-	            	}
-			} 
-        }
-		out.close();
 
-//		while (true){
-//			int val = in.readBits(BITS_PER_WORD);
-//			if (val == -1) break;
-//			out.writeBits(BITS_PER_WORD, val);
-//		}
-//		out.close();
->>>>>>> 48ec0299b8edb786d55cfc474f444d49a8b8a2e9
-	}
+
+
+		}
+	
 	
 	//helper method for decompress
 	//reads the tree of the header
@@ -189,7 +155,7 @@ public class HuffProcessor {
 			HuffNode x = new HuffNode(0,0,left,right);
 			return x;
 		}
-<<<<<<< HEAD
+		
 		return new HuffNode(bis.readBits(BITS_PER_WORD + 1), 0);
 	}
 	
@@ -273,28 +239,5 @@ public class HuffProcessor {
 		}
 }
 
-		
+
 	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
-		else{
-			return new HuffNode(bis.readBits(BITS_PER_WORD + 1), 0);
-		}
-	}
-
-}
-	
->>>>>>> 48ec0299b8edb786d55cfc474f444d49a8b8a2e9
