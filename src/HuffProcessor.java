@@ -23,8 +23,7 @@ public class HuffProcessor {
 	
 	public static final int DEBUG_HIGH = 4;
 	public static final int DEBUG_LOW = 1;
-	public enum Header{TREE_HEADER, COUNT_HEADER};
-	public Header myHeader = Header.TREE_HEADER;
+
 
 	
 	public HuffProcessor() {
@@ -63,9 +62,12 @@ public class HuffProcessor {
 	 */
 	public void decompress(BitInputStream in, BitOutputStream out){
 		int temp = in.readBits(BITS_PER_INT);
-		if (temp != HUFF_TREE && temp != HUFF_NUMBER) {
-			throw new HuffException("wrong huff number");
+		if (temp != HUFF_TREE) {  
+			throw new HuffException("illegal header starts with " +temp);
 		}
+//		if (temp != HUFF_TREE && temp != HUFF_NUMBER) {
+//			throw new HuffException("wrong huff number");
+//		}
 		HuffNode root = readTreeHeader(in);
 		HuffNode current = root;
 		int bits;
@@ -73,21 +75,22 @@ public class HuffProcessor {
 			bits = in.readBits(1);
 			if(bits == -1) {
 				throw new HuffException("bad input, no PSEUDO_EOF");
-			}
-			if(bits == 0) {
-				current = current.getLeft();
-			}else if (bits == 1) {
-				current = current.getRight();
-			}
-            	if(current.getLeft() == null && current.getRight() == null) {
-            		if (current.getValue() == PSEUDO_EOF) {
-            			break;
-            		}else {
-            			out.writeBits(BITS_PER_WORD, current.getValue());
-            			current = root;
-            		}
-            	} 
+			}else {
+				if(bits == 0) {
+					current = current.myLeft;
+				}else current = current.myRight;
+	            
+				if(current.myLeft == null && current.myRight == null) {
+	            	if (current.getValue() == PSEUDO_EOF) {
+	            		break;
+	            	}else {
+	            		out.writeBits(BITS_PER_WORD, current.myValue);
+	            		current = root;
+	            		}
+	            	}
+			} 
         }
+		out.close();
 
 //		while (true){
 //			int val = in.readBits(BITS_PER_WORD);
@@ -109,9 +112,10 @@ public class HuffProcessor {
 			HuffNode x = new HuffNode(0,0,left,right);
 			return x;
 		}
-		else if (bits == 1) {
+		else{
 			return new HuffNode(bis.readBits(BITS_PER_WORD + 1), 0);
 		}
-		return new HuffNode(bis.readBits(BITS_PER_WORD + 1), 0);
 	}
+
 }
+	
