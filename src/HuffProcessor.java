@@ -60,8 +60,8 @@ public class HuffProcessor {
 		freq[PSEUDO_EOF] = 1;
 		while (true){
 			int val = in.readBits(BITS_PER_WORD);
-			freq[val] += 1;
 			if (val == -1) break;
+			freq[val] += 1;
 		}
 		return freq;
 	}
