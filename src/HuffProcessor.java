@@ -94,32 +94,32 @@ public class HuffProcessor {
 	
 	public String[] codingHelper(HuffNode root, String s,String[] codings) {
 		
-		if(root.getLeft() == null && root.getRight()== null) codings[root.getValue()] = s;
+		if(root.myLeft == null && root.myRight== null) codings[root.myValue] = s;
 		
-		if(root.getLeft() != null) {
-			codingHelper(root.getLeft(), s + "0",codings);
+		if(root.myLeft != null) {
+			codingHelper(root.myLeft, s + "0",codings);
 		}
 		
-		if(root.getRight() != null) {
-			codingHelper(root.getRight(), s + "1",codings);
+		if(root.myRight != null) {
+			codingHelper(root.myRight, s + "1",codings);
 		}
 		
 		return codings;
 		}
 	
 	public void writeHeader(HuffNode root, BitOutputStream out) {
-		if(root.getLeft() == null && root.getRight() == null) {
+		if(root.myLeft == null && root.myRight == null) {
 			out.write(1);
-			out.write(root.getValue());
+			out.write(root.myValue);
 		}
-		if(root.getLeft() != null) {
+		if(root.myLeft != null) {
 			out.write(0);
-			writeHeader(root.getLeft(), out);
+			writeHeader(root.myLeft, out);
 		}
 		
-		if(root.getRight() != null) {
+		if(root.myRight != null) {
 			out.write(0);
-			writeHeader(root.getRight(), out);
+			writeHeader(root.myRight, out);
 		}
 	}
 	
@@ -163,7 +163,7 @@ public class HuffProcessor {
 				}else current = current.myRight;
 	            
 				if(current.myLeft == null && current.myRight == null) {
-	            	if (current.getValue() == PSEUDO_EOF) {
+	            	if (current.myValue == PSEUDO_EOF) {
 	            		break;
 	            	}else {
 	            		out.writeBits(BITS_PER_WORD, current.myValue);
