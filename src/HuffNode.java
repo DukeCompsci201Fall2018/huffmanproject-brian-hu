@@ -54,6 +54,18 @@ public class HuffNode implements Comparable<HuffNode> {
 	public int compareTo(HuffNode other) {
 		return myWeight - other.myWeight;
 	}
+	
+	public int getValue() {
+		return myValue;
+	}
+	
+	public HuffNode getLeft() {
+		return myLeft;
+	}
+	
+	public HuffNode getRight() {
+		return myRight;
+	}
 
 	@Override
 	public String toString() {

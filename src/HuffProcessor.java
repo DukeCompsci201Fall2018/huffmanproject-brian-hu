@@ -23,6 +23,9 @@ public class HuffProcessor {
 	
 	public static final int DEBUG_HIGH = 4;
 	public static final int DEBUG_LOW = 1;
+	public enum Header{TREE_HEADER, COUNT_HEADER};
+	public Header myHeader = Header.TREE_HEADER;
+
 	
 	public HuffProcessor() {
 		this(0);
@@ -59,12 +62,56 @@ public class HuffProcessor {
 	 *            Buffered bit stream writing to the output file.
 	 */
 	public void decompress(BitInputStream in, BitOutputStream out){
-
-		while (true){
-			int val = in.readBits(BITS_PER_WORD);
-			if (val == -1) break;
-			out.writeBits(BITS_PER_WORD, val);
+		int temp = in.readBits(BITS_PER_INT);
+		if (temp != HUFF_TREE && temp != HUFF_NUMBER) {
+			throw new HuffException("wrong huff number");
 		}
-		out.close();
+		HuffNode root = readTreeHeader(in);
+		HuffNode current = root;
+		int bits;
+		while (true){
+			bits = in.readBits(1);
+			if(bits == -1) {
+				throw new HuffException("bad input, no PSEUDO_EOF");
+			}
+			if(bits == 0) {
+				current = current.getLeft();
+			}else if (bits == 1) {
+				current = current.getRight();
+			}
+            	if(current.getLeft() == null && current.getRight() == null) {
+            		if (current.getValue() == PSEUDO_EOF) {
+            			break;
+            		}else {
+            			out.writeBits(BITS_PER_WORD, current.getValue());
+            			current = root;
+            		}
+            	} 
+        }
+
+//		while (true){
+//			int val = in.readBits(BITS_PER_WORD);
+//			if (val == -1) break;
+//			out.writeBits(BITS_PER_WORD, val);
+//		}
+//		out.close();
+	}
+	//helper method for decompress
+	//reads the tree of the header
+	public HuffNode readTreeHeader(BitInputStream bis) {
+		int bits = bis.readBits(1);
+		if(bits == -1) {
+			throw new HuffException("no PSEUDO_EOF");
+		}
+		if (bits == 0) {
+			HuffNode left = readTreeHeader(bis);
+			HuffNode right = readTreeHeader(bis);
+			HuffNode x = new HuffNode(0,0,left,right);
+			return x;
+		}
+		else if (bits == 1) {
+			return new HuffNode(bis.readBits(BITS_PER_WORD + 1), 0);
+		}
+		return new HuffNode(bis.readBits(BITS_PER_WORD + 1), 0);
 	}
 }
