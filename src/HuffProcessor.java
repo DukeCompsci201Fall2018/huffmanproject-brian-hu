@@ -94,7 +94,9 @@ public class HuffProcessor {
 	
 	public String[] codingHelper(HuffNode root, String s,String[] codings) {
 		
-		if(root.myLeft == null && root.myRight== null) codings[root.myValue] = s;
+		if(root.myLeft == null && root.myRight== null) {
+			codings[root.myValue] = s;
+		}
 		
 		if(root.myLeft != null) {
 			codingHelper(root.myLeft, s + "0",codings);
@@ -112,15 +114,12 @@ public class HuffProcessor {
 			out.writeBits(1,1);
 			out.writeBits(BITS_PER_WORD + 1, root.myValue);
 		}
-		if(root.myLeft != null) {
+		if(root.myLeft != null && root.myRight != null) {
 			out.writeBits(1,0);
 			writeHeader(root.myLeft, out);
-		}
-		
-		if(root.myRight != null) {
-			out.writeBits(1,0);
 			writeHeader(root.myRight, out);
 		}
+		
 	}
 	
 	public void writeCompressedBits(BitInputStream BIS, String[] codings, BitOutputStream BOS) {
