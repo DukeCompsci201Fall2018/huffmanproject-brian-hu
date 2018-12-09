@@ -71,14 +71,14 @@ public class HuffProcessor {
 		
 		for(int n=0; n < freq.length; n++){
 			if(freq[n]>0){
-			pq.add(new HuffNode(n,freq[n],null,null));
+			pq.add(new HuffNode(n,freq[n]));
 			}
 		}
 		
 		while (pq.size() > 1) {
 			HuffNode left = pq.remove();
 			HuffNode right = pq.remove();
-			HuffNode t = new HuffNode(0,left.myWeight+right.myWeight,left,right);
+			HuffNode t = new HuffNode(-1,left.myWeight+right.myWeight,left,right);
 			pq.add(t);
 			}
 		HuffNode root = pq.remove();
