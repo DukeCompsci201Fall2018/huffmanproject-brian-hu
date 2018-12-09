@@ -71,7 +71,7 @@ public class HuffProcessor {
 		
 		for(int n=0; n < freq.length; n++){
 			if(freq[n]>0){
-			pq.add(new HuffNode(n,freq[n]));
+			pq.add(new HuffNode(n,freq[n], null, null));
 			}
 		}
 		
@@ -127,12 +127,12 @@ public class HuffProcessor {
 		while(true) {
 		int bits = BIS.readBits(BITS_PER_WORD);
 		if(bits == -1) {
-		BOS.writeBits(codings[PSEUDO_EOF].length(), Integer.parseInt(codings[PSEUDO_EOF],2));
 		break;
 		}
 		String temp = codings[bits];
 		BOS.writeBits(temp.length(), Integer.parseInt(temp, 2));
 		}
+		BOS.writeBits(codings[PSEUDO_EOF].length(), Integer.parseInt(codings[PSEUDO_EOF], 2));
 		}
 
 	/**
